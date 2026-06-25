@@ -78,4 +78,17 @@ public class BaseController {
         return "Hello world " + new Date();
     }
 
+    @GetMapping(value = "students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Student getStudentById(@PathVariable("id") Long id) {
+        return students.stream()
+                .filter(el->el.getId().equals(id)).findFirst().orElseThrow(()->new RuntimeException(("student with id") + id + "was not found"));
+    }
+
+    @GetMapping(value = "students/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Student getStudentByGroup(@RequestParam(value="group") String group) {
+        return students.stream().filter(el->el.getGroup().equals(group)).findFirst().orElse(null);
+    }
+
+
+
 }
