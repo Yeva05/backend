@@ -1,8 +1,11 @@
 package dev.vorstu.controllers;
 
 import dev.vorstu.dto.Student;
+import dev.vorstu.repositories.StudentRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,57 +23,10 @@ public class BaseController {
         return counter++;
     }
 
-    private final List<Student> students=new ArrayList<>();
+    private final StudentRepository studentRepository;
 
-    @PostConstruct
-    private void init() {
-        students.add(new Student(0L, "User1", "VM", "+7"));
-        students.add(new Student(1L,"User2", "VM", "+8"));
-        students.add(new Student(2L, "User3", "AM", "+99"));
-    }
-
-    @PostMapping(value="students", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Student createStudent(@RequestBody Student newStudent) {return addStudent(newStudent);}
-
-    private Student addStudent(Student student) {
-        student.setId(generateId());
-        students.add(student);
-        return student;
-    }
-
-    @PutMapping(value="students", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Student changeStudent(@RequestBody Student changingStudent) {
-        return updateStudent(changingStudent);
-    }
-
-
-    private Student updateStudent(Student student) {
-        if(student.getId()==null) {
-            throw new RuntimeException("id pf changing student cannot be null");
-        }
-        Student changingStudent=students.stream()
-                .filter(el-> Objects.equals(el.getId(), student.getId()))
-                .findFirst()
-                .orElseThrow(()->new RuntimeException(("student with id") + student.getId() + "was not found"));
-        changingStudent.setFio(student.getFio());
-        changingStudent.setGroup(student.getGroup());
-        changingStudent.setPhoneNumber(student.getPhoneNumber());
-        return student;
-    }
-
-    @DeleteMapping(value="students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Long deleteStudent(@PathVariable("id") Long id) {
-        return removeStudent(id);
-    }
-
-    private Long removeStudent(Long id) {
-        students.removeIf(el->el.getId().equals(id));
-        return id;
-    }
-
-    @GetMapping("students")
-    public List<Student> getAllStudents() {
-        return students;
+    public BaseController(StudentRepository studentRepository) {
+        this.studentRepository=studentRepository;
     }
 
     @GetMapping("check")
@@ -78,16 +34,31 @@ public class BaseController {
         return "Hello world " + new Date();
     }
 
-    @GetMapping(value = "students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Student getStudentById(@PathVariable("id") Long id) {
-        return students.stream()
-                .filter(el->el.getId().equals(id)).findFirst().orElseThrow(()->new RuntimeException(("student with id") + id + "was not found"));
+    //Новые методы для postgres
+
+    @GetMapping("/students")
+    public List<Student> getAllStudents() {
+        return (List<Student>) studentRepository.findAll();
     }
 
-    @GetMapping(value = "students/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Student getStudentByGroup(@RequestParam(value="group") String group) {
-        return students.stream().filter(el->el.getGroup().equals(group)).findFirst().orElse(null);
+    @PostMapping(value="students", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Student createStudent (@RequestBody Student student) {
+        return studentRepository.save(student);
     }
+
+    @PutMapping(value="students", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Student changeStudent(@RequestBody Student changingStudent) {
+        return studentRepository.save(changingStudent);
+    }
+
+    @DeleteMapping(value="students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Long deleteStudent(@PathVariable("id") Long id) {
+        studentRepository.deleteById(id);
+        return id;
+    }
+
+
+
 
 
 

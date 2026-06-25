@@ -1,5 +1,9 @@
 package dev.vorstu.dto;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="students")
 public class Student {
     public Student(){};
 
@@ -23,8 +27,13 @@ public class Student {
     }
 
     private String fio;
+
+    @Column (name="group_of_students")
     private String group;
     private String phoneNumber;
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
     public String getFio() {
