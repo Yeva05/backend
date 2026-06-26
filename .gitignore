@@ -34,14 +34,3 @@ application-local.properties
 # Temporary files
 *.tmp
 *.bak
-*.~*
-
-"src\main\java\dev\vorstu\controllers\BaseController.java"
-
-"src\main\java\dev\vorstu\dto\Student.java"
-
-"src\main\java\dev\vorstu\repositories\StudentRepository.java"
-
-src\main\java\dev\vorstu\Initializer.java
-
-src\main\java\dev\vorstu\VorstuApplication.java
