@@ -10,7 +10,9 @@ public class Initializer {
     private StudentRepository studentRepository;
 
     public void initial() {
-        studentRepository.save(new Student("fio", "def_group", "+79"));
-        studentRepository.save(new Student("fio2", "some_group", "+78"));
+        if (studentRepository.count()==0) {
+            studentRepository.save(new Student("fio", "def_group", "+79"));
+            studentRepository.save(new Student("fio2", "some_group", "+78"));
+        }
     }
 }
