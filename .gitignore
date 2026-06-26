@@ -1,5 +1,4 @@
 # Compiled output
-/build/
 /target/
 /out/
 
@@ -37,3 +36,12 @@ application-local.properties
 *.bak
 *.~*
 
+"src\main\java\dev\vorstu\controllers\BaseController.java"
+
+"src\main\java\dev\vorstu\dto\Student.java"
+
+"src\main\java\dev\vorstu\repositories\StudentRepository.java"
+
+src\main\java\dev\vorstu\Initializer.java
+
+src\main\java\dev\vorstu\VorstuApplication.java
