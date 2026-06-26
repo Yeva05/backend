@@ -2,6 +2,7 @@ package dev.vorstu.controllers;
 
 import dev.vorstu.dto.Student;
 import dev.vorstu.service.StudentService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class BaseController {
     }
 
     @GetMapping("/students")
-    public List<Student> getAllStudents(){
+    public Page<Student> getAllStudents(){
         return studentService.getAllStudents();
     }
 

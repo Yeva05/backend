@@ -3,9 +3,12 @@ package dev.vorstu.service;
 import dev.vorstu.dto.Student;
 import dev.vorstu.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 @Service
@@ -34,8 +37,10 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public List<Student> getAllStudents(){
-         return studentRepository.findAll();
+    public Page<Student> getAllStudents(){
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
+        Page<Student> page = studentRepository.findAll(pageable);
+         return page;
     }
 
     public Optional<Student> getStudentById(Long id) {
