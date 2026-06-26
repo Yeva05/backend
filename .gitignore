@@ -1,0 +1,39 @@
+# Compiled output
+/build/
+/target/
+/out/
+
+# Gradle wrapper (обычно его не игнорируют, но если не хотите хранить – можно)
+.gradle/
+gradle-wrapper.jar
+/gradlew
+/gradlew.bat
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Application properties with secrets (если вы храните пароли в файле)
+application-local.properties
+
+# Temporary files
+*.tmp
+*.bak
+*.~*
+
