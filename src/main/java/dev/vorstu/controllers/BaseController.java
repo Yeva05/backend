@@ -56,10 +56,4 @@ public class BaseController {
         studentRepository.deleteById(id);
         return id;
     }
-
-
-
-
-
-
 }
