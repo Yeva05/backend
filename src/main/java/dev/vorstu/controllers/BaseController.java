@@ -1,6 +1,7 @@
 package dev.vorstu.controllers;
 
-import dev.vorstu.dto.Student;
+import dev.vorstu.dto.StudentResponse;
+import dev.vorstu.entities.Student;
 import dev.vorstu.service.StudentService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/base")
@@ -35,12 +35,12 @@ public class BaseController {
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
-        return studentService.getStudentById(id).map(student -> new ResponseEntity<>(student, HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
     @GetMapping("/students")
-    public Page<Student> getAllStudents(){
+    public Page<StudentResponse> getAllStudents(){
         return studentService.getAllStudents();
     }
 

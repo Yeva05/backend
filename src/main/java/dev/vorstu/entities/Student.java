@@ -1,4 +1,4 @@
-package dev.vorstu.dto;
+package dev.vorstu.entities;
 
 import jakarta.persistence.*;
 

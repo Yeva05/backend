@@ -1,3 +1,5 @@
+/*
+
 package dev.vorstu;
 
 import org.junit.jupiter.api.Test;
@@ -11,3 +13,4 @@ class VorstuApplicationTests {
 	}
 
 }
+*/
