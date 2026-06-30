@@ -1,5 +1,6 @@
 package dev.vorstu.service;
 
+import dev.vorstu.dto.StudentRequest;
 import dev.vorstu.dto.StudentResponse;
 import dev.vorstu.entities.Student;
 import dev.vorstu.mappers.StudentMapper;
@@ -21,18 +22,19 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
-    public Student createStudent(String fio, String group, String phoneNumber) {
-        Student student=new Student(fio, group, phoneNumber);
-        return studentRepository.save(student);
+    public StudentResponse createStudent(StudentRequest studentRequest) {
+        Student student=studentMapper.toStudent(studentRequest);
+        Student saved = studentRepository.save(student);
+        return studentMapper.toStudentResponse(saved);
     }
 
-    public Student updateStudent(Long id, String fio,  String group, String phoneNumber) {
-        Student student=studentRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        student.setFio(fio);
-        student.setGroup(group);
-        student.setPhoneNumber(phoneNumber);
-        return studentRepository.save(student);
+    public StudentResponse updateStudent(Long id, StudentRequest request) {
+        Student existing=studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
+        studentMapper.updateEntity(request, existing);
+        Student updated =studentRepository.save(existing);
+        return studentMapper.toStudentResponse(updated);
     }
+
 
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);

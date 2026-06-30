@@ -1,8 +1,10 @@
 package dev.vorstu.controllers;
 
+import dev.vorstu.dto.StudentRequest;
 import dev.vorstu.dto.StudentResponse;
 import dev.vorstu.entities.Student;
 import dev.vorstu.service.StudentService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,9 +31,9 @@ public class BaseController {
     //Новые методы для postgres
 
     @PostMapping(value="students", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Student> createStudent (@RequestBody Student student) {
-        Student savedStudent=studentService.createStudent(student.getFio(), student.getGroup(), student.getPhoneNumber());
-        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+    public ResponseEntity<StudentResponse> createStudent (@RequestBody StudentRequest request) {
+        StudentResponse response = studentService.createStudent(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/students/{id}")
@@ -44,10 +46,10 @@ public class BaseController {
         return studentService.getAllStudents();
     }
 
+    @Transactional
     @PutMapping(value="/students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        Student updatedStudent=studentService.updateStudent(id, student.getFio(), student.getGroup(), student.getPhoneNumber());
-        return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
+    public ResponseEntity<StudentResponse> updateStudent(@PathVariable Long id, @RequestBody StudentRequest request) {
+        return ResponseEntity.ok(studentService.updateStudent(id, request));
     }
 
 
