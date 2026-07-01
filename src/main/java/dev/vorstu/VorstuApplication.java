@@ -16,7 +16,7 @@ public class VorstuApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(VorstuApplication.class, args);
-		initiator.initial();
+		//initiator.initial();
 	}
 
 }

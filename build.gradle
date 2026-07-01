@@ -24,14 +24,12 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	runtimeOnly 'org.postgresql:postgresql'
-	// MapStruct
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    implementation 'org.liquibase:liquibase-core:4.27.0'
+	implementation("org.springframework.boot:spring-boot-starter-liquibase")
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-
-
