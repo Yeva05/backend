@@ -1,4 +1,4 @@
-package dev.vorstu.entities;
+package dev.vorstu.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,15 +9,13 @@ import lombok.*;
 @Entity
 @Table(name="admins")
 @Data
-@Getter
-@Setter
 public class Admin {
     //fields
-    private String fio;
-    private String phoneNumber;
-    private String email;
-    private String password;
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long adminId;
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 }

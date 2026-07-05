@@ -1,9 +1,10 @@
-package dev.vorstu.dto;
+package dev.vorstu.models.dto.student;
 
 public record StudentResponse(
         Long id,
         String fio,
-        String group,
+        Long groupId,
+        Long userId,
         String phoneNumber
 ) {
 }

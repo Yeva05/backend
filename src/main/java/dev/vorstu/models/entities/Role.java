@@ -1,4 +1,4 @@
-package dev.vorstu.entities;
+package dev.vorstu.models.entities;
 
 public enum Role {
     ROLE_STUDENT,

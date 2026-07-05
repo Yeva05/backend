@@ -1,4 +1,4 @@
-package dev.vorstu.entities;
+package dev.vorstu.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,10 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="admins")
+@Table(name="groups")
 @Data
-@Getter
-@Setter
 public class Group {
     private String name;
     @Id
@@ -22,4 +20,7 @@ public class Group {
 
     @ManyToMany(mappedBy = "groups")
     private List<Teacher> teachers = new ArrayList<>();
+
+    @OneToMany(mappedBy="group")
+    private List<Student> students=new ArrayList<>();
 }

@@ -1,11 +1,12 @@
-package dev.vorstu.entities;
+package dev.vorstu.models.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,15 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="admins")
+@Table(name="users")
 @Data
-@Getter
-@Setter
 public class User implements UserDetails {
-    @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
     @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @Id
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
@@ -37,6 +36,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Student student;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Teacher teacher;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Admin admin;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -64,4 +72,7 @@ public class User implements UserDetails {
     }
 
 
+    public Role getRole() {
+        return role;
+    }
 }

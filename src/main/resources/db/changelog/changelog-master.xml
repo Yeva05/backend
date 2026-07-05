@@ -7,6 +7,8 @@
 
     <include file="db/changelog/changesets/v1__create_students.sql"/>
     <include file="db/changelog/changesets/v2__insert_students.sql"/>
+    <include file="db/changelog/changesets/v3__change_scheme.sql"/>
+
 
 
 </databaseChangeLog>
