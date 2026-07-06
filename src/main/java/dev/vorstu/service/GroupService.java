@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 public class GroupService {
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
-    private final TeacherRepository teacherRepository;
-
 
     public GroupResponse createGroup(GroupRequest groupRequest) {
         Group group=groupMapper.toGroup(groupRequest);
@@ -51,16 +49,4 @@ public class GroupService {
         return groupMapper.toGroupResponse(group);
     }
 
-    public void assignTeacherToGroup(Long groupId, Long teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
-        Group group = groupRepository.findById(groupId).orElseThrow(() -> new EntityNotFoundException("Group not found"));
-
-        if (!teacher.getGroups().contains(group)) {
-            teacher.getGroups().add(group);
-        }
-        if (!group.getTeachers().contains(teacher)) {
-            group.getTeachers().add(teacher);
-        }
-        teacherRepository.save(teacher);
     }
-}

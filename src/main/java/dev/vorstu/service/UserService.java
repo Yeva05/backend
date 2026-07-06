@@ -2,9 +2,10 @@ package dev.vorstu.service;
 
 import dev.vorstu.models.dto.SignUpRequest;
 import dev.vorstu.models.dto.UserResponse;
-import dev.vorstu.models.entities.User;
+import dev.vorstu.models.entities.*;
 import dev.vorstu.mappers.UserMapper;
 import dev.vorstu.repositories.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 //TODO add the rest of crud methods for the users
@@ -31,11 +33,59 @@ public class UserService  {
 
 
     public UserResponse createUser(SignUpRequest request) {
+        if (userRepository.existsByUsername(request.username())) {
+            throw new IllegalArgumentException("Username already taken");
+        }
+        if (userRepository.existsByEmail(request.email())) {
+            throw new IllegalArgumentException("Email already taken");
+        }
         User user = new User();
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setRole(null);
+        user.setRole(request.role());
+        if (user.getRole() == Role.ROLE_ADMIN) {
+            Admin admin=new Admin();
+            admin.setUser(user);
+            user.setAdmin(admin);
+        }
+        else if (user.getRole()==Role.ROLE_TEACHER) {
+            if (request.fio() == null || request.fio().isBlank()) {
+                throw new IllegalArgumentException("FIO is required for teacher");
+            }
+            if (request.subject()==null) {
+                throw new IllegalArgumentException("Subject is required for teacher");
+            }
+            Teacher teacher = new Teacher();
+            teacher.setFio(request.fio());
+            teacher.setPhoneNumber(request.phoneNumber());
+            teacher.setSubject(request.subject());
+            if (request.groupIds() != null && !request.groupIds().isEmpty()) {
+                List<Group> groups = groupRepository.findAllById(request.groupIds());
+                if (groups.size() != request.groupIds().size()) {
+                    throw new EntityNotFoundException("Some groups not found");
+                }
+                teacher.setGroups(groups);
+            }
+            teacher.setUser(user);
+            user.setTeacher(teacher);
+        }
+        else {
+            if (request.fio() == null || request.fio().isBlank()) {
+                throw new IllegalArgumentException("FIO is required for student");
+            }
+            Student student = new Student();
+            student.setFio(request.fio());
+            student.setPhoneNumber(request.phoneNumber());
+
+            if (request.groupId() != null) {
+                Group group = groupRepository.findById(request.groupId())
+                        .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + request.groupId()));
+                student.setGroup(group);
+            }
+            student.setUser(user);
+            user.setStudent(student);
+        }
         userRepository.save(user);
         return userMapper.toResponse(user);
     }

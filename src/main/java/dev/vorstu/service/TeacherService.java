@@ -96,5 +96,20 @@ public class TeacherService {
         return teacherMapper.toTeacherResponse(teacher);
     }
 
+    @Transactional
+    public TeacherResponse assignTeacherToGroup(Long groupId, Long teacherId) {
+        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+        Group group = groupRepository.findById(groupId).orElseThrow(() -> new EntityNotFoundException("Group not found"));
+
+        if (!teacher.getGroups().contains(group)) {
+            teacher.getGroups().add(group);
+        }
+        if (!group.getTeachers().contains(teacher)) {
+            group.getTeachers().add(teacher);
+        }
+        teacherRepository.save(teacher);
+        return teacherMapper.toTeacherResponse(teacher);
+    }
+
 
 }

@@ -2,12 +2,10 @@ package dev.vorstu.mappers;
 
 import dev.vorstu.models.dto.SignUpRequest;
 import dev.vorstu.models.dto.UserResponse;
-import dev.vorstu.models.dto.auth.AuthResponse;
 import dev.vorstu.models.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-//AuthRequest и SignUpRequest???
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

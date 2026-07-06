@@ -9,16 +9,27 @@ import dev.vorstu.models.dto.student.StudentRequest;
 import dev.vorstu.models.dto.student.StudentResponse;
 import dev.vorstu.models.dto.teacher.TeacherRequest;
 import dev.vorstu.models.dto.teacher.TeacherResponse;
+import dev.vorstu.models.entities.User;
 import dev.vorstu.service.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-//TODO assign teacher to group method, CRUD for user minus create, ADD PERMISSION ANNOTATIONS
+import java.nio.file.AccessDeniedException;
+
+import static dev.vorstu.models.entities.Role.ROLE_ADMIN;
+import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
+
+
+//TODO CRUD for user minus create,
 
 
 @AllArgsConstructor
@@ -34,6 +45,8 @@ public class AdminController {
 
     //CRUD for Users
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value="/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> createUser (@RequestBody SignUpRequest request) {
         UserResponse response = userService.createUser(request);
@@ -43,19 +56,20 @@ public class AdminController {
     //CRUD for students
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.getStudentById(id));
+    public ResponseEntity<StudentResponse> getStudentById(@AuthenticationPrincipal User currentUser, @PathVariable Long id) throws AccessDeniedException {
+        return ResponseEntity.ok(studentService.getStudentById(currentUser, id));
     }
 
     @GetMapping("/students")
-    public Page<StudentResponse> getAllStudents(){
-        return studentService.getAllStudents();
+    public Page<StudentResponse> getAllStudents(@AuthenticationPrincipal User currentUser,
+                                                @PageableDefault(size = 10, sort = "id") Pageable pageable){
+        return studentService.getAllStudents(currentUser, pageable);
     }
 
     @Transactional
     @PutMapping(value="/students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StudentResponse> updateStudent(@PathVariable Long id, @RequestBody StudentRequest request) {
-        return ResponseEntity.ok(studentService.updateStudent(id, request));
+    public ResponseEntity<StudentResponse> updateStudent(@AuthenticationPrincipal User currentUser, @PathVariable Long id, @RequestBody StudentRequest request) throws AccessDeniedException {
+        return ResponseEntity.ok(studentService.updateStudent(currentUser, id, request));
     }
 
 
@@ -89,9 +103,16 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Transactional
+    @PutMapping(value="/{teacherId}/groups/{groupId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TeacherResponse> assignTeacherToGroup(@PathVariable Long teacherId, @PathVariable Long groupId) {
+        return ResponseEntity.ok(teacherService.assignTeacherToGroup(groupId, teacherId));
+    }
+
     //CRUD for groups
 
-    @PostMapping(value="groups", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value="/groups", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GroupResponse> createGroup (@RequestBody GroupRequest request) {
         GroupResponse response = groupService.createGroup(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -119,27 +140,26 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value="assignations")
 
     //CRUD for admins
 
-    @GetMapping("/admins/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AdminResponse> getAdminById(@PathVariable Long id) {
         return ResponseEntity.ok(adminService.getAdminById(id));
     }
 
-    @GetMapping("/admins")
+    @GetMapping
     public Page<AdminResponse> getAllAdmins(){
         return adminService.getAllAdmins();
     }
 
     @Transactional
-    @PutMapping(value="/admins/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AdminResponse> updateAdmin(@PathVariable Long id, @RequestBody AdminRequest request) {
         return ResponseEntity.ok(adminService.updateAdmin(id, request));
     }
 
-    @DeleteMapping(value="/admins/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteAdmin(@PathVariable("id") Long id) {
         adminService.deleteAdmin(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

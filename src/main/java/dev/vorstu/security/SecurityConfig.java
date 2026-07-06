@@ -32,7 +32,7 @@ public class SecurityConfig {
                                            JwtAuthenticationFilter jwtFilter,
                                            JwtAuthenticationEntryPoint entryPoint) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()
+                .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // Handles 401
                         .accessDeniedHandler(new JwtAccessDeniedHandler())           // Handles 403
@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/teachers/**").hasAnyRole("ADMIN", "TEACHER")
                 .requestMatchers("/api/students/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
                 .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class));
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
