@@ -28,9 +28,9 @@ public class Teacher {
 
     @ManyToMany
     @JoinTable(
-            name = "teacher_group", // Имя промежуточной таблицы
-            joinColumns = @JoinColumn(name = "teacher_id"), // Ключ этой таблицы (Student)
-            inverseJoinColumns = @JoinColumn(name = "group_id") // Ключ чужой таблицы (Course)
+            name = "teacher_group",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private List<Group> groups = new ArrayList<>();
 }

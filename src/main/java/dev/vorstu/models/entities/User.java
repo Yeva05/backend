@@ -33,6 +33,7 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Getter
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
@@ -71,8 +72,4 @@ public class User implements UserDetails {
         return true;
     }
 
-
-    public Role getRole() {
-        return role;
-    }
 }

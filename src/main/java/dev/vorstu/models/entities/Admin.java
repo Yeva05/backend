@@ -10,7 +10,6 @@ import lombok.*;
 @Table(name="admins")
 @Data
 public class Admin {
-    //fields
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
