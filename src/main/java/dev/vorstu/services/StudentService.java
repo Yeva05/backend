@@ -1,4 +1,4 @@
-package dev.vorstu.service;
+package dev.vorstu.services;
 
 import dev.vorstu.models.dto.student.StudentRequest;
 import dev.vorstu.models.dto.student.StudentResponse;
@@ -12,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;

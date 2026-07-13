@@ -14,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -39,8 +38,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()   // доступ к логину/регистрации
-                .requestMatchers("/api/admins/**").hasRole("ADMIN")
+                .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/registration/confirm-registration").permitAll()
+                        .requestMatchers("/api/admins/**").hasRole("ADMIN")
                 .requestMatchers("/api/teachers/**").hasAnyRole("ADMIN", "TEACHER")
                 .requestMatchers("/api/students/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
                 .anyRequest().authenticated())

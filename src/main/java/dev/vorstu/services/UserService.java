@@ -1,4 +1,4 @@
-package dev.vorstu.service;
+package dev.vorstu.services;
 
 import dev.vorstu.models.dto.SignUpRequest;
 import dev.vorstu.models.dto.UserResponse;
@@ -7,16 +7,11 @@ import dev.vorstu.mappers.UserMapper;
 import dev.vorstu.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.Optional;
 
 //TODO add the rest of crud methods for the users
 @AllArgsConstructor
@@ -88,6 +83,31 @@ public class UserService  {
         }
         userRepository.save(user);
         return userMapper.toResponse(user);
+    }
+
+    public String generateTemporaryPassword(int length) {
+        if (length < 4) {
+            length = 10; // защита от слишком короткого пароля
+        }
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(chars.length());
+            sb.append(chars.charAt(index));
+        }
+        return sb.toString();
+    }
+
+    public String generateTemporaryPassword() {
+        return generateTemporaryPassword(10);
+    }
+
+
+    public void saveUser(User user) {
+        // Пароль уже должен быть закодирован перед сохранением
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
 
 }

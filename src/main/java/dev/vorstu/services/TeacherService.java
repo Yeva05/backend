@@ -1,4 +1,4 @@
-package dev.vorstu.service;
+package dev.vorstu.services;
 
 import dev.vorstu.mappers.TeacherMapper;
 import dev.vorstu.models.dto.teacher.TeacherRequest;

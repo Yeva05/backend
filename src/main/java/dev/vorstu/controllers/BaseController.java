@@ -1,6 +1,6 @@
 package dev.vorstu.controllers;
 
-import dev.vorstu.service.StudentService;
+import dev.vorstu.services.StudentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;

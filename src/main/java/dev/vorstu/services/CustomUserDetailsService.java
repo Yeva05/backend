@@ -1,4 +1,4 @@
-package dev.vorstu.service;
+package dev.vorstu.services;
 
 import dev.vorstu.models.entities.User;
 import dev.vorstu.repositories.UserRepository;

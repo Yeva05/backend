@@ -1,0 +1,12 @@
+userName,email,role,fio,phoneNumber,groupId,subject
+ivanov_i,ivanov@mail.com,STUDENT,Иванов Иван Иванович,+7(999)123-45-67,1,
+petrov_p,petrov@mail.com,STUDENT,Петров Петр Петрович,+7(999)987-65-43,2,
+sidorov_s,sidorov@mail.com,TEACHER,Сидоров Сидор Сидорович,+7(999)111-22-33,,Математика
+smirnova_a,smirnova@mail.com,TEACHER,Смирнова Анна Алексеевна,+7(999)555-44-33,,Физика
+invalid_user,invalid-email,STUDENT,Неверный email,+7(999)000-00-00,1,
+no_phone,no_phone@mail.com,STUDENT,,1,
+no_fio,nofio@mail.com,STUDENT,+7(999)111-22-33,1,
+bad_role,badrole@mail.com,ADMIN,Неправильная роль,+7(999)222-33-44,1,
+no_group,no_group@mail.com,STUDENT,Без группы,+7(999)333-44-55,,
+teacher_no_subject,teacher_no_subject@mail.com,TEACHER,Учитель без предмета,+7(999)444-55-66,,
+duplicate_email,ivanov@mail.com,STUDENT,Дубликат email,+7(999)666-77-88,1,

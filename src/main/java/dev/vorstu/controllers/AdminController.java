@@ -2,7 +2,6 @@ package dev.vorstu.controllers;
 import dev.vorstu.models.dto.*;
 import dev.vorstu.models.dto.admin.AdminRequest;
 import dev.vorstu.models.dto.admin.AdminResponse;
-import dev.vorstu.models.dto.auth.AuthResponse;
 import dev.vorstu.models.dto.group.GroupRequest;
 import dev.vorstu.models.dto.group.GroupResponse;
 import dev.vorstu.models.dto.student.StudentRequest;
@@ -10,7 +9,7 @@ import dev.vorstu.models.dto.student.StudentResponse;
 import dev.vorstu.models.dto.teacher.TeacherRequest;
 import dev.vorstu.models.dto.teacher.TeacherResponse;
 import dev.vorstu.models.entities.User;
-import dev.vorstu.service.*;
+import dev.vorstu.services.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,9 +23,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-
-import static dev.vorstu.models.entities.Role.ROLE_ADMIN;
-import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
 
 
 //TODO CRUD for user minus create,

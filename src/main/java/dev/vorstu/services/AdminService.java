@@ -1,4 +1,4 @@
-package dev.vorstu.service;
+package dev.vorstu.services;
 
 import dev.vorstu.mappers.AdminMapper;
 import dev.vorstu.models.dto.admin.AdminRequest;

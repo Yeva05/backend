@@ -1,5 +1,4 @@
 package dev.vorstu;
-import dev.vorstu.models.entities.Student;
 import dev.vorstu.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

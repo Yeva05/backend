@@ -1,12 +1,10 @@
-package dev.vorstu.service;
+package dev.vorstu.services;
 
 import dev.vorstu.mappers.GroupMapper;
 import dev.vorstu.models.dto.group.GroupRequest;
 import dev.vorstu.models.dto.group.GroupResponse;
 import dev.vorstu.models.entities.Group;
-import dev.vorstu.models.entities.Teacher;
 import dev.vorstu.repositories.GroupRepository;
-import dev.vorstu.repositories.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -48,5 +48,16 @@ public class GroupService {
         Group group= groupRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Group not found"));
         return groupMapper.toGroupResponse(group);
     }
+
+
+    public Group getGroupEntityById(Long id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + id));
+    }
+
+    public boolean existsById(Long id) {
+        return groupRepository.existsById(id);
+    }
+
 
     }

@@ -3,8 +3,8 @@ package dev.vorstu.controllers;
 import dev.vorstu.models.dto.auth.AuthRequest;
 import dev.vorstu.models.entities.Role;
 import dev.vorstu.security.jwt.JwtTokenProvider;
-import dev.vorstu.service.CustomUserDetailsService;
-import dev.vorstu.service.UserService;
+import dev.vorstu.services.CustomUserDetailsService;
+import dev.vorstu.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @RestController

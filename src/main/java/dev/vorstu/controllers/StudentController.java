@@ -3,7 +3,7 @@ package dev.vorstu.controllers;
 import dev.vorstu.models.dto.student.StudentRequest;
 import dev.vorstu.models.dto.student.StudentResponse;
 import dev.vorstu.models.entities.User;
-import dev.vorstu.service.StudentService;
+import dev.vorstu.services.StudentService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

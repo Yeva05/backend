@@ -13,7 +13,6 @@ import java.util.List;
 @Table(name="teachers")
 @Data
 public class Teacher {
-    //fields
     private String fio;
     private String phoneNumber;
     private String subject;
