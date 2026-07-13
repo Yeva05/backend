@@ -4,6 +4,8 @@ import dev.vorstu.models.entities.RegistrationRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -20,5 +22,10 @@ public interface RegRequestRepository extends JpaRepository<RegistrationRequest,
     Optional<RegistrationRequest> findByEmailAndUsedFalseAndExpiryDateAfter(String email, LocalDateTime dateTime);
 
     Optional<RegistrationRequest> findByToken(String token);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM RegistrationRequest r WHERE r.processed = true OR r.expiryDate < :now")
+    int deleteProcessedOrExpired(@Param("now") LocalDateTime now);
 }
 
