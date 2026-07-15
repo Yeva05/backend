@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", ignore = true) // пароль шифруем отдельно
+    @Mapping(target = "password", ignore = true)
     @Mapping(target = "student", ignore = true)
     @Mapping(target = "teacher", ignore = true)
     @Mapping(target = "admin", ignore = true)
@@ -20,4 +20,6 @@ public interface UserMapper {
     @Mapping(target = "teacherId", expression = "java(user.getTeacher() != null ? user.getTeacher().getId() : null)")
     @Mapping(target = "adminId", expression = "java(user.getAdmin() != null ? user.getAdmin().getId() : null)")
     UserResponse toResponse(User user);
+
+
 }

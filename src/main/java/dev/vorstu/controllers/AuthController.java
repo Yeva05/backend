@@ -1,7 +1,11 @@
 package dev.vorstu.controllers;
 
+import dev.vorstu.models.dto.ChangePasswordRequest;
+import dev.vorstu.models.dto.SignUpRequest;
+import dev.vorstu.models.dto.UserResponse;
 import dev.vorstu.models.dto.auth.AuthRequest;
 import dev.vorstu.models.entities.Role;
+import dev.vorstu.models.entities.User;
 import dev.vorstu.security.jwt.JwtTokenProvider;
 import dev.vorstu.services.CustomUserDetailsService;
 import dev.vorstu.services.UserService;
@@ -11,12 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -81,4 +83,10 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User currentUser, @RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(userService.changePassword(currentUser, request));
+    }
+
 }

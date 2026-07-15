@@ -1,16 +1,19 @@
 package dev.vorstu.controllers;
 
 import dev.vorstu.models.dto.RegistrationCsvRow;
+import dev.vorstu.models.dto.SignUpRequest;
 import dev.vorstu.models.dto.ValidationResult;
 import dev.vorstu.models.dto.group.GroupResponse;
 import dev.vorstu.models.entities.*;
 import dev.vorstu.services.*;
 import dev.vorstu.services.EmailService;
 import dev.vorstu.repositories.RegRequestRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/registration")
+@AllArgsConstructor
 public class EmailController {
 
     private final CsvParser csvParser;
@@ -31,23 +35,8 @@ public class EmailController {
     private final UserService userService;
     private final RegRequestRepository regRequestRepository;
     private final GroupService groupService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public EmailController(CsvParser csvParser,
-                                  RegistrationValidator validator,
-                                  RegRequestService regRequestService,
-                                  EmailService emailService,
-                                  UserService userService,
-                                  RegRequestRepository regRequestRepository,
-                                  GroupService groupService) {
-        this.csvParser = csvParser;
-        this.validator = validator;
-        this.regRequestService = regRequestService;
-        this.emailService = emailService;
-        this.userService = userService;
-        this.regRequestRepository = regRequestRepository;
-        this.groupService=groupService;
-    }
 
     @PostMapping("/registration-requests")
     @PreAuthorize("hasRole('ADMIN')")
@@ -102,11 +91,9 @@ public class EmailController {
 
     @GetMapping("/confirm-registration")
     public ResponseEntity<?> confirm(@RequestParam String token) {
-        // 1. Поиск заявки по токену
         RegistrationRequest request = regRequestRepository.findByToken(token)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
 
-        // 2. Проверка, что заявка не просрочена и не использована
         if (request.isUsed()) {
             return ResponseEntity.badRequest().body("This registration link has already been used.");
         }
@@ -117,7 +104,8 @@ public class EmailController {
         User user = new User();
         user.setUsername(request.getUserName());
         user.setEmail(request.getEmail());
-        user.setPassword(userService.generateTemporaryPassword());
+        String rawPassword = userService.generateTemporaryPassword();
+        user.setPassword(rawPassword);
         String roleStr = request.getRole();
         if (!roleStr.startsWith("ROLE_")) {
             roleStr = "ROLE_" + roleStr;
@@ -146,15 +134,12 @@ public class EmailController {
             return ResponseEntity.badRequest().body("Unsupported role: " + request.getRole());
         }
 
-        // 4. Сохранение пользователя (каскадно сохранится и дочерняя сущность)
         userService.saveUser(user);
 
-        // 5. Пометка заявки как использованной
         request.setUsed(true);
         regRequestRepository.save(request);
 
-        // 6. Опционально: отправить приветственное письмо с логином/паролем
-         emailService.sendWelcomeEmail(user.getEmail(), user.getUsername(), user.getPassword());
+        emailService.sendWelcomeEmail(user.getEmail(), user.getUsername(), rawPassword);
 
         return ResponseEntity.ok("Registration confirmed successfully! You can now log in.");
     }

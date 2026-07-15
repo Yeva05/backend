@@ -1,5 +1,6 @@
 package dev.vorstu.services;
 
+import dev.vorstu.models.dto.ChangePasswordRequest;
 import dev.vorstu.models.dto.SignUpRequest;
 import dev.vorstu.models.dto.UserResponse;
 import dev.vorstu.models.entities.*;
@@ -9,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -105,9 +107,21 @@ public class UserService  {
 
 
     public void saveUser(User user) {
-        // Пароль уже должен быть закодирован перед сохранением
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
+    }
+
+    @Transactional
+    public UserResponse changePassword(User user, ChangePasswordRequest request) {
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        return userMapper.toResponse(user);
+    }
+
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userMapper.toResponse(user);
     }
 
 }
